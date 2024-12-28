@@ -1,30 +1,21 @@
 from flask import Flask, request, jsonify
-import os
-from datetime import datetime
-import garth
+import garminconnect
+from datetime import date, timedelta
 
 app = Flask(__name__)
 
 # Helper function to configure Garth and retrieve data
-def get_data(email, password, period=28):
-    garth.login(email, password)
-    garth.save(os.path.expanduser("~/.garth"))
-    garth.configure(domain="garmin.com")
+def get_data(email, password, period=31):
+    garmin = garminconnect.Garmin(email, password)
+    garmin.login()
     
-    # Fetch data
-    sleep_summary = garth.DailySleep.list(period=period)
-    stress_summary=garth.DailyStress.list(period=period)
-    hrv_summary=garth.DailyHRV.list(period=period)
-    steps_summary=garth.DailySteps.list(period=period)
-    intensity_mins_summary=garth.DailyIntensityMinutes.list(period=period)
+    data = []
+
+    for x in range(period):
+        d = (date.today() - timedelta(days=x)).isoformat()
+        data.append(garmin.get_stats_and_body(d))
     
-    return {
-        "sleep": {"summary": sleep_summary},
-        "hrv": {"summary": hrv_summary},
-        "stress": {"summary": stress_summary},
-        "steps": {"summary": steps_summary},
-        "intensityMins": {"summary": intensity_mins_summary},
-    }
+    return data
 
 # API endpoint to retrieve data
 @app.route('/api/data', methods=['POST'])
