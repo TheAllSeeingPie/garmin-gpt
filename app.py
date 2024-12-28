@@ -21,7 +21,7 @@ def get_data(email, password, period=28):
     ]
     
     return {
-        "sleep": {"summary": sleep_summary, "detail": sleep_detail},
+        "sleep": {"summary": sleep_summary}, #, "detail": sleep_detail},
         "hrv": {"summary": hrv_summary},
         "stress": {"summary": stress_summary}
     }
