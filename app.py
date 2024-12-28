@@ -4,22 +4,9 @@ from datetime import date, timedelta
 
 app = Flask(__name__)
 
-# Helper function to configure Garth and retrieve data
-def get_data(email, password, period=31):
-    garmin = garminconnect.Garmin(email, password)
-    garmin.login()
-    
-    data = []
-
-    for x in range(period):
-        d = (date.today() - timedelta(days=x)).isoformat()
-        data.append(garmin.get_stats_and_body(d))
-    
-    return data
-
 # API endpoint to retrieve data
-@app.route('/api/data', methods=['POST'])
-def api_data():
+@app.route('/api/summary', methods=['POST'])
+def api_summary():
     # Parse request JSON for credentials and parameters
     req_data = request.get_json()
     email = req_data.get('email')
@@ -30,7 +17,15 @@ def api_data():
         return jsonify({"error": "Email and password are required"}), 400
     
     try:
-        data = get_data(email, password, period)
+        garmin = garminconnect.Garmin(email, password)
+        garmin.login()
+        
+        data = []
+
+        for x in range(period):
+            d = (date.today() - timedelta(days=x)).isoformat()
+            data.append(garmin.get_stats_and_body(d))
+        
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
