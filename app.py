@@ -4,7 +4,6 @@ from datetime import date, timedelta
 
 app = Flask(__name__)
 
-# API endpoint to retrieve data
 @app.route('/api/summary', methods=['POST'])
 def api_summary():
     # Parse request JSON for credentials and parameters
@@ -29,6 +28,10 @@ def api_summary():
         return jsonify(data)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/privacy', methods=['GET'])
+def privacy():
+    return "There is none!"
 
 if __name__ == '__main__':
     app.run(debug=True)
