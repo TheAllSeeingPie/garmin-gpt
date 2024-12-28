@@ -10,7 +10,7 @@ def api_summary():
     req_data = request.get_json()
     email = req_data.get('email')
     password = req_data.get('password')
-    period = req_data.get('period', 28)
+    period = req_data.get('period', 31)
     
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
