@@ -12,18 +12,18 @@ def get_data(email, password, period=28):
     garth.configure(domain="garmin.com")
     
     # Fetch data
-    stress_summary = garth.DailyStress.list(period=period)
-    hrv_summary = garth.DailyHRV.list(period=period)
     sleep_summary = garth.DailySleep.list(period=period)
-    
-    sleep_detail = [
-        garth.SleepData.get(s.calendar_date) for s in sleep_summary
-    ]
+    stress_summary=garth.DailyStress.list(period=period)
+    hrv_summary=garth.DailyHRV.list(period=period)
+    steps_summary=garth.DailySteps.list(period=period)
+    intensity_mins_summary=garth.DailyIntensityMinutes.list(period=period)
     
     return {
-        "sleep": {"summary": sleep_summary}, #, "detail": sleep_detail},
+        "sleep": {"summary": sleep_summary},
         "hrv": {"summary": hrv_summary},
-        "stress": {"summary": stress_summary}
+        "stress": {"summary": stress_summary},
+        "steps": {"summary": steps_summary},
+        "intensityMins": {"summary": intensity_mins_summary},
     }
 
 # API endpoint to retrieve data
